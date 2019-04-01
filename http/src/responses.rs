@@ -58,3 +58,39 @@ pub struct Unspent {
     pub limit: u32,
     pub result: Option<Vec<Utxo>>,
 }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct TransactionHex {
+    pub hex: String,
+    pub merkle: Option<Vec<String>>,
+    pub block_height: Option<u32>,
+    pub pos: Option<u32>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct TransactionMerkle {
+    pub merkle: Vec<String>,
+    pub block_height: u32,
+    pub pos: u32,
+}
+
+// #[derive(Debug, Clone, Deserialize, Serialize)]
+// pub struct TransactionVerbose {
+//     pub txid: String,
+//     pub hash: String,
+//     pub size: u32,
+//     pub vsize: u32,
+//     pub version: u32,
+//     pub locktime: u32,
+// }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct TransactionHash {
+    pub tx_hash: String,
+    pub merkle: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct BroadcastedTx {
+    pub hash: String,
+}

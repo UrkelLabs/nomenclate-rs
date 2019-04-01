@@ -1,8 +1,9 @@
 use reqwest::Client;
 
-mod blockchain;
 mod address;
+mod blockchain;
 mod server;
+mod transaction;
 
 pub struct NomenclateHttpClient {
     client: Client,
