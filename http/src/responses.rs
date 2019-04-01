@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde_derive::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -93,4 +95,30 @@ pub struct TransactionHash {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct BroadcastedTx {
     pub hash: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Banner {
+    pub banner: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Features {
+    pub genesis_hash: String,
+    pub hosts: HashMap<String, HostConfig>,
+    pub protocol_max: String,
+    pub protocol_min: String,
+    pub server_version: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct HostConfig {
+    pub port: u32,
+    pub ssl: bool,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Version {
+    pub version: String,
+    pub protocol: Vec<String>,
 }
