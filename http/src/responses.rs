@@ -122,3 +122,11 @@ pub struct Version {
     pub version: String,
     pub protocol: Vec<String>,
 }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct NameHistory {
+    pub total: u32,
+    pub offset: u32,
+    pub limit: u32,
+    pub result: Option<Vec<SlimTX>>,
+}

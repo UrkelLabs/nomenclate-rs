@@ -2,6 +2,7 @@ use reqwest::Client;
 
 mod address;
 mod blockchain;
+mod name;
 mod server;
 mod transaction;
 
