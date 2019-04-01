@@ -34,3 +34,27 @@ pub struct BlockHeaders {
 pub struct Fee {
     pub fee: u32,
 }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Balance {
+    pub confirmed: u64,
+    pub unconfirmed: u64,
+    pub received: u64,
+    pub spent: u64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Utxo {
+    pub tx_hash: String,
+    pub height: u32,
+    pub tx_pos: u32,
+    pub value: u32,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Unspent {
+    pub total: u32,
+    pub offset: u32,
+    pub limit: u32,
+    pub result: Option<Vec<Utxo>>,
+}
