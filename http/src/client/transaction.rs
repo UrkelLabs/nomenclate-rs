@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 
-use crate::client::HttpClient;
+use crate::client::{HttpClient, Result};
 
-use crate::error::Error;
 use crate::responses;
 
 impl HttpClient {
@@ -10,7 +9,7 @@ impl HttpClient {
         &self,
         tx_hash: &str,
         merkle: bool,
-    ) -> Result<responses::TransactionHex, Error> {
+    ) -> Result<responses::TransactionHex> {
         let uri = format!("{}/nomenclate/transaction/{}", self.uri.clone(), tx_hash);
 
         let mut resp = self
@@ -18,14 +17,11 @@ impl HttpClient {
             .get(&uri)
             .query(&[("merkle", merkle)])
             .query(&[("verbose", false)])
-            .send()
-            .map_err(Error::from)
-            .unwrap();
+            .send()?;
 
-        //Before this, we have to check if the response was a success or not, and return error if
-        //not.
+        let transaction_hex = resp.json()?;
 
-        resp.json().map_err(Error::from)
+        Ok(transaction_hex)
     }
 
     //TODO need Handshake Rust client types before I do this, as it'll just be too much repeat.
@@ -48,7 +44,7 @@ impl HttpClient {
         &self,
         tx_hash: &str,
         block_height: u32,
-    ) -> Result<responses::TransactionMerkle, Error> {
+    ) -> Result<responses::TransactionMerkle> {
         let uri = format!(
             "{}/nomenclate/transaction/{}/merkle/{}",
             self.uri.clone(),
@@ -56,12 +52,11 @@ impl HttpClient {
             block_height
         );
 
-        let mut resp = self.client.get(&uri).send().map_err(Error::from).unwrap();
+        let mut resp = self.client.get(&uri).send().unwrap();
 
-        //Before this, we have to check if the response was a success or not, and return error if
-        //not.
+        let transaction_merkle = resp.json()?;
 
-        resp.json().map_err(Error::from)
+        Ok(transaction_merkle)
     }
 
     pub fn get_transaction_by_position(
@@ -69,7 +64,7 @@ impl HttpClient {
         block_height: u32,
         position: u32,
         merkle: bool,
-    ) -> Result<responses::TransactionHash, Error> {
+    ) -> Result<responses::TransactionHash> {
         let uri = format!(
             "{}/nomenclate/transaction/{}/byPosition/{}",
             self.uri.clone(),
@@ -77,41 +72,24 @@ impl HttpClient {
             position
         );
 
-        let mut resp = self
-            .client
-            .get(&uri)
-            .query(&[("merkle", merkle)])
-            .send()
-            .map_err(Error::from)
-            .unwrap();
+        let mut resp = self.client.get(&uri).query(&[("merkle", merkle)]).send()?;
 
-        //Before this, we have to check if the response was a success or not, and return error if
-        //not.
+        let transaction = resp.json()?;
 
-        resp.json().map_err(Error::from)
+        Ok(transaction)
     }
 
-    pub fn broadcast_transaction(
-        &self,
-        transaction: &str,
-    ) -> Result<responses::BroadcastedTx, Error> {
+    pub fn broadcast_transaction(&self, transaction: &str) -> Result<responses::BroadcastedTx> {
         let uri = format!("{}/nomenclate/transaction/broadcast", self.uri.clone(),);
 
         let mut map = HashMap::new();
 
         map.insert("tx", transaction);
 
-        let mut resp = self
-            .client
-            .post(&uri)
-            .json(&map)
-            .send()
-            .map_err(Error::from)
-            .unwrap();
+        let mut resp = self.client.post(&uri).json(&map).send()?;
 
-        //Before this, we have to check if the response was a success or not, and return error if
-        //not.
+        let broadcast = resp.json()?;
 
-        resp.json().map_err(Error::from)
+        Ok(broadcast)
     }
 }

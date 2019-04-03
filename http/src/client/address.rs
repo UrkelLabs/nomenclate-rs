@@ -1,6 +1,5 @@
-use crate::client::HttpClient;
+use crate::client::{HttpClient, Result};
 
-use crate::error::Error;
 use crate::responses;
 
 impl HttpClient {
@@ -9,7 +8,7 @@ impl HttpClient {
         address: &str,
         offset: u32,
         limit: u32,
-    ) -> Result<responses::AddressHistory, Error> {
+    ) -> Result<responses::AddressHistory> {
         let uri = format!(
             "{}/nomenclate/address/{}/history",
             self.uri.clone(),
@@ -21,29 +20,25 @@ impl HttpClient {
             .get(&uri)
             .query(&[("offset", offset)])
             .query(&[("limit", limit)])
-            .send()
-            .map_err(Error::from)
-            .unwrap();
+            .send()?;
 
-        //Before this, we have to check if the response was a success or not, and return error if
-        //not.
+        let history = resp.json()?;
 
-        resp.json().map_err(Error::from)
+        Ok(history)
     }
 
-    pub fn get_balance(&self, address: &str) -> Result<responses::Balance, Error> {
+    pub fn get_balance(&self, address: &str) -> Result<responses::Balance> {
         let uri = format!(
             "{}/nomenclate/address/{}/balance",
             self.uri.clone(),
             address
         );
 
-        let mut resp = self.client.get(&uri).send().map_err(Error::from).unwrap();
+        let mut resp = self.client.get(&uri).send()?;
 
-        //Before this, we have to check if the response was a success or not, and return error if
-        //not.
+        let balance = resp.json()?;
 
-        resp.json().map_err(Error::from)
+        Ok(balance)
     }
 
     pub fn get_unspent(
@@ -51,7 +46,7 @@ impl HttpClient {
         address: &str,
         offset: u32,
         limit: u32,
-    ) -> Result<responses::Unspent, Error> {
+    ) -> Result<responses::Unspent> {
         let uri = format!(
             "{}/nomenclate/address/{}/unspent",
             self.uri.clone(),
@@ -63,13 +58,11 @@ impl HttpClient {
             .get(&uri)
             .query(&[("offset", offset)])
             .query(&[("limit", limit)])
-            .send()
-            .map_err(Error::from)
-            .unwrap();
+            .send()?;
 
-        //Before this, we have to check if the response was a success or not, and return error if
-        //not.
-        resp.json().map_err(Error::from)
+        let unspent = resp.json()?;
+
+        Ok(unspent)
     }
 
     //TODO mempool

@@ -1,38 +1,43 @@
+use crate::client::{HttpClient, Result};
+
 use crate::responses;
 
-use crate::client::HttpClient;
-use crate::error::Error;
-
 impl HttpClient {
-    pub fn get_banner(&self) -> Result<responses::Banner, Error> {
+    pub fn get_banner(&self) -> Result<responses::Banner> {
         let uri = format!("{}/nomenclate/banner", self.uri.clone());
 
-        let mut resp = self.client.get(&uri).send().map_err(Error::from).unwrap();
+        let mut resp = self.client.get(&uri).send()?;
 
-        resp.json().map_err(Error::from)
+        let banner = resp.json()?;
+
+        Ok(banner)
     }
 
-    pub fn get_features(&self) -> Result<responses::Features, Error> {
+    pub fn get_features(&self) -> Result<responses::Features> {
         let uri = format!("{}/nomenclate/features", self.uri.clone());
 
-        let mut resp = self.client.get(&uri).send().map_err(Error::from).unwrap();
+        let mut resp = self.client.get(&uri).send()?;
 
-        resp.json().map_err(Error::from)
+        let features = resp.json()?;
+
+        Ok(features)
     }
 
-    pub fn ping(&self) -> Result<(), Error> {
+    pub fn ping(&self) -> Result<()> {
         let uri = format!("{}/nomenclate/ping", self.uri.clone());
 
-        let _resp = self.client.get(&uri).send().map_err(Error::from).unwrap();
+        let _resp = self.client.get(&uri).send()?;
 
         Ok(())
     }
 
-    pub fn get_version(&self) -> Result<responses::Version, Error> {
+    pub fn get_version(&self) -> Result<responses::Version> {
         let uri = format!("{}/nomenclate/version", self.uri.clone());
 
-        let mut resp = self.client.get(&uri).send().map_err(Error::from).unwrap();
+        let mut resp = self.client.get(&uri).send()?;
 
-        resp.json().map_err(Error::from)
+        let version = resp.json()?;
+
+        Ok(version)
     }
 }

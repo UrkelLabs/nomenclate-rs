@@ -1,4 +1,6 @@
+use crate::error::Error;
 use reqwest::Client;
+use std::result;
 
 mod address;
 mod blockchain;
@@ -10,6 +12,8 @@ pub struct HttpClient {
     client: Client,
     uri: String,
 }
+
+pub type Result<T> = result::Result<T, Error>;
 
 impl HttpClient {
     pub fn new(uri: &str) -> HttpClient {
